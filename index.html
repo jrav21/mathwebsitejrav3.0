@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Julia's Math Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 60%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px gray;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .question {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+        input {
+            width: 50px;
+            text-align: center;
+            margin-left: 10px;
+        }
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background: black;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        button:hover {
+            background: darkgray;
+            transform: scale(1.1);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        #result-message, #welcome-message, #error-message {
+            font-size: 24px;
+            font-weight: bold;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        #result-message {
+            color: green;
+            display: none;
+        }
+        #welcome-message {
+            color: blue;
+        }
+        #error-message {
+            color: red;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JULIA'S MATH WEBSITE</h1>
+        <p id="welcome-message">Website is required for Julia</p>
+        <p id="error-message">Where are your answers?</p>
+        <p id="cheat-message" style="color: red; font-size: 24px; font-weight: bold; display: none;">Nuh uh uh, that's cheating</p>
+        <div class="grid" id="questions-container"></div>
+        <p id="result-message">All Correct!</p>
+        <div class="buttons">
+            <button onclick="reset()">RESET</button>
+            <button onclick="showAnswers()">SHOW ANSWERS</button>
+            <button onclick="checkAnswers()">CHECK</button>
+            <button onclick="generateQuestions('addition')">ADDITION</button>
+            <button onclick="generateQuestions('subtraction')">SUBTRACTION</button>
+            <button onclick="generateQuestions('multiply')">MULTIPLY</button>
+            <button onclick="generateQuestions('divide')">DIVIDE</button>
+        </div>
+        <p>created by: Josiah & ChatGPT</p>
+    </div>
+    <script>
+        let answersShown = false;
+        
+        function generateQuestions(operation) {
+            document.getElementById("welcome-message").style.display = "none";
+            document.getElementById("result-message").style.display = "none";
+            document.getElementById("error-message").style.display = "none";
+            document.getElementById("cheat-message").style.display = "none";
+            answersShown = false;
+            const container = document.getElementById("questions-container");
+            container.innerHTML = "";
+            for (let i = 0; i < 10; i++) {
+                let num1 = Math.ceil(Math.random() * 10);
+                let num2 = Math.ceil(Math.random() * 10);
+                let symbol;
+                switch (operation) {
+                    case 'addition': symbol = '+'; break;
+                    case 'subtraction': symbol = '-'; break;
+                    case 'multiply': symbol = 'x'; break;
+                    case 'divide': symbol = '/'; num1 = num1 * num2; break;
+                }
+                let question = document.createElement("div");
+                question.classList.add("question");
+                question.innerHTML = `${num1} ${symbol} ${num2} = <input type="text" data-answer="${eval(num1 + symbol.replace('x', '*').replace('/', '/') + num2)}">`;
+                container.appendChild(question);
+            }
+        }
+
+        function reset() {
+            document.getElementById("questions-container").innerHTML = "";
+            document.getElementById("result-message").style.display = "none";
+            document.getElementById("welcome-message").style.display = "block";
+            document.getElementById("error-message").style.display = "none";
+            document.getElementById("cheat-message").style.display = "none";
+            answersShown = false;
+        }
+
+        function showAnswers() {
+            document.querySelectorAll("input").forEach(input => input.value = input.dataset.answer);
+            answersShown = true;
+        }
+
+        function checkAnswers() {
+            const inputs = document.querySelectorAll("input");
+            if (inputs.length === 0) {
+                document.getElementById("error-message").style.display = "block";
+                return;
+            }
+            document.getElementById("error-message").style.display = "none";
+            if (answersShown) {
+                document.getElementById("cheat-message").style.display = "block";
+                return;
+            }
+            let allCorrect = true;
+            inputs.forEach(input => {
+                if (input.value == input.dataset.answer) {
+                    input.style.backgroundColor = "lightgreen";
+                } else {
+                    input.style.backgroundColor = "lightcoral";
+                    allCorrect = false;
+                }
+            });
+            if (allCorrect) {
+                document.getElementById("questions-container").innerHTML = "";
+                document.getElementById("result-message").style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>
