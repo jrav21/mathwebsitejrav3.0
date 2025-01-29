@@ -115,15 +115,30 @@
                 let num1 = Math.ceil(Math.random() * 10);
                 let num2 = Math.ceil(Math.random() * 10);
                 let symbol;
+                let answer;
                 switch (operation) {
-                    case 'addition': symbol = '+'; break;
-                    case 'subtraction': symbol = '-'; break;
-                    case 'multiply': symbol = 'x'; break;
-                    case 'divide': symbol = '/'; num1 = num1 * num2; break;
+                    case 'addition':
+                        symbol = '+';
+                        answer = num1 + num2;
+                        break;
+                    case 'subtraction':
+                        symbol = '-';
+                        if (num1 < num2) [num1, num2] = [num2, num1];
+                        answer = num1 - num2;
+                        break;
+                    case 'multiply':
+                        symbol = 'x';
+                        answer = num1 * num2;
+                        break;
+                    case 'divide':
+                        symbol = '/';
+                        answer = num1;
+                        num1 = num1 * num2;
+                        break;
                 }
                 let question = document.createElement("div");
                 question.classList.add("question");
-                question.innerHTML = `${num1} ${symbol} ${num2} = <input type="text" data-answer="${eval(num1 + symbol.replace('x', '*').replace('/', '/') + num2)}">`;
+                question.innerHTML = `${num1} ${symbol} ${num2} = <input type="text" data-answer="${answer}">`;
                 container.appendChild(question);
             }
         }
